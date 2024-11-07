@@ -1,227 +1,242 @@
-# Exercise 1: Exploring the Building Blocks of the Application [Read-Only]
+# Exercise1: Deploying Resources with Azure Developer CLI
 
 ### Estimated Duration: 30 minutes
 
 ## Lab Scenario
 
-In this exercise, you will review the source code of creative writer application and familiarize yourself with the technologies used. You will learn about the FastAPI framework, how real-time data streaming is handled, and how monitoring and observability tools like OpenTelemetry are integrated. By the end of this exercise, you'll have a solid understanding of the code structure and the different tech stacks that power the application
+In this exercise, you will deploy the necessary resources for your FastAPI application using the Azure Developer CLI (azd). You will set up your environment, initialize and configure the deployment process, and use azd commands to provision and deploy services in Azure. 
 
 ## Lab Objectives
 
-After you complete this exercise, you will understand:
+After you complete this exercise, you will:
 
-- Know the technology stacks used
-- Review source code files
+- Learn to provision and deploy application resources in Azure using the Azure Developer CLI (azd).
 
-### Task2: Know the Technology Stacks used 
+### Task1: Understanding Azure Developer CLI and the Deployment Workflow
 
-In this task, you will familiarize yourself with the various technologies that power the Contoso Creative Writer application. The app leverages a combination of powerful tools and frameworks to help you write well-researched, product-specific articles. As you explore the code, you will learn about the following key technology stacks:
+In this task, you will gain an understanding of the Azure Developer CLI (azd) and how it facilitates the deployment of cloud resources. You'll explore the main.bicep file, the core infrastructure template for your application, and learn about the primary resources it defines, including key parameters, dependencies, and outputs. By the end, you'll be familiar with how azd uses this file to automate provisioning, setting the foundation for deploying resources with ease in the next steps.
 
-- **FastAPI Framework**
+>**Labtip:** **AZD (Azure Developer CLI)** is a command-line tool designed to streamline the process of building, deploying, and managing Azure applications. It simplifies the interaction with Azure resources by allowing developers to define infrastructure using code, deploy applications, and manage environments in a more efficient and automated way.
 
-  - ***What It Is:*** FastAPI is a modern, fast (high-performance) web framework for building APIs with Python 3.7+ based on standard Python type hints.
+1. From the desktop, open **Visual Studio Code**.
 
-  - ***Why It’s Used:*** FastAPI is chosen for its performance and ease of use. It allows you to quickly create a RESTful API for interacting with the various agents involved in the article-writing process.
+   ![](../media/ex1img0.png)
 
-  - ***Reference :*** [FastAPI](https://fastapi.tiangolo.com/)
+1. On **Visual Studio Code** pane, select **Open Folder** under **file** menu from top menu.
 
-- **Prompty**
+    ![](../media/ex1img6.png)
 
-  - ***What It Is:*** Prompty is a library that allows you to manage, create, and evaluate prompts for language models like GPT-3. It simplifies the process of interacting with AI models by providing better prompt management tools.
-    
-  - ***Why It’s Used:*** Prompty helps in organizing and refining prompts to guide AI agents effectively, ensuring that each step in the article creation process (research, writing, editing) is powered by accurate and relevant inputs.
+1. Navigate to `C:\contoso\contoso-creative-writer` directory, click on **Select folder**.
 
-  - ***Reference :*** [Prompty](https://prompty.ai/)
+1. Once you open the folder in Visual Studio Code, on Do you trust the authors of the files of this folder? pop up, click on Yes, I trust the authors.
 
-- **Bing Search API**
+   ![](../media/ex1img7.png)
 
-  - ***What It Is:*** The Bing Search API allows you to programmatically access Bing search results. It’s useful for gathering information from the web, such as research materials related to the article topic.
+1. Once you have the **contoso-creative-writer** directory opened, ensure you have the source code files from the **explorer pane**
 
-  - ***Why It’s Used:*** In the Contoso Creative Writer app, the Bing Search API is used by the research agent to gather relevant information about the topic provided by the user.
+1. From the explorer menu, navigate to `/infra/main.bicep` file to review. A Bicep file is a simplified, readable syntax for defining and deploying Azure resources, which is compiled into ARM templates for deployment.
 
-  - ***Reference :*** [Bing Search API](https://www.microsoft.com/en-us/bing/apis)
-
-- **Azure OpenAI**
-
-  - ***What It Is:*** Azure OpenAI provides access to OpenAI's powerful models, including GPT-3, which can be used for a variety of tasks such as natural language understanding, generation, and more.
-
-  - ***Why It’s Used:*** In this app, Azure OpenAI powers the various AI agents that handle tasks like research, product matching, article writing, and editing.
-
-  - ***Reference :*** [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
-
-- **Azure AI Search**
-
-  - ***What It Is:*** Azure AI Search (formerly known as Azure Cognitive Search) is a cloud search service with built-in AI capabilities to help you extract insights from data, such as searching for related products using semantic similarity.
-
-  - ***Why It’s Used:*** The product agent uses Azure AI Search to find products related to the research topic by performing a semantic similarity search in a vector store, improving the relevance of product recommendations.
-
-  - ***Reference :*** [Azure AI Search](https://learn.microsoft.com/en-us/azure/search/search-what-is-azure-search)
-
-### Task3: Review source code files 
-
-In this task, you will review three core code files that together initialize a FastAPI application with tracing and orchestration capabilities. You’ll analyze the main application setup, task flow with agents, and tracing configuration using OpenTelemetry and Azure Monitor, gaining insight into API handling, task management, and monitoring setup.
-
-1. From the explorer menu of **visual Studio Code**, navigate to `/src/api/main.py` file and review the codes.
-
-1. The first part of the file imports various libraries and modules used throughout the application.
-
-   ```python
-   import os
-   from pathlib import Path
-   from fastapi import FastAPI
-   from dotenv import load_dotenv
-   from prompty.tracer import trace
-   from prompty.core import PromptyStream, AsyncPromptyStream
-   from fastapi.responses import StreamingResponse
-   from fastapi.middleware.cors import CORSMiddleware
-   from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-   from tracing import init_tracing
-   from orchestrator import Task, create
-   ```
-   
-   >**os and Path:** Used for file path handling and environment variable management.
-
-   >**FastAPI:** The web framework used to build the API.
-
-   >**dotenv:** Loads environment variables from a .env file.
-
-   >**prompty:** A library for managing and evaluating prompts with OpenAI.
-
-   >**StreamingResponse:** Used for streaming data from the server to the client.
-
-   >**CORSMiddleware:** Middleware to handle Cross-Origin Resource Sharing (CORS).
-
-   >**FastAPIInstrumentor:** Part of OpenTelemetry for instrumenting the FastAPI app with tracing.
-
-   >**tracing and orchestrator:** Custom modules for tracing setup and task orchestration.
-
-1. The next part of the file focus on loading environment variables and initializing **FastAPI** application.
-
-   ```python
-   base = Path(__file__).resolve().parent
-   load_dotenv()
-   tracer = init_tracing()
-   app = FastAPI()
-   ```
-   >**load_dotenv():** This function loads the environment variables from a .env file into the Python environment. It ensures that sensitive information like API keys and database credentials are stored securely and can be accessed within the app.
-
-   >**init_tracing():** Initializes the tracing system for monitoring and debugging, ensuring that requests and interactions can be traced across services.
-
-   >**FastAPI():** This line initializes the FastAPI app, which will handle HTTP requests and route them to the appropriate functions.
-
-1. In the next part, there is a setup of  CORS (Cross-Origin Resource Sharing) middleware.
-
-   ```python
-   code_space = os.getenv("CODESPACE_NAME")
-   app_insights = os.getenv("APPINSIGHTS_CONNECTIONSTRING")
-
-   if code_space: 
-       origin_8000= f"https://{code_space}-8000.app.github.dev"
-       origin_5173 = f"https://{code_space}-5173.app.github.dev"
-       ingestion_endpoint = app_insights.split(';')[1].split('=')[1]
-    
-       origins = [origin_8000, origin_5173, os.getenv("API_SERVICE_ACA_URI"), os.getenv("WEB_SERVICE_ACA_URI"), ingestion_endpoint]
-   else:
-       origins = [
-           o.strip()
-           for o in Path(Path(__file__).parent / "origins.txt").read_text().splitlines()
-       ]
-       origins = ['*']
+1. In the `main.bicep`. navigate to **ai** module definition.
+ 
+   ```bicep
+    module ai 'core/host/ai-environment.bicep' = {
+    name: 'ai'
+    scope: resourceGroup
+    params: {
+        location: location
+        tags: tags
+        hubName: !empty(aiHubName) ? aiHubName : 'ai-hub-${resourceToken}'
+        projectName: !empty(aiProjectName) ? aiProjectName : 'ai-project-${resourceToken}'
+        keyVaultName: !empty(keyVaultName) ? keyVaultName : '${abbrs.keyVaultVaults}${resourceToken}'
+        storageAccountName: !empty(storageAccountName)
+        ? storageAccountName
+        : '${abbrs.storageStorageAccounts}${resourceToken}'
+        openAiName: !empty(openAiName) ? openAiName : 'aoai-${resourceToken}'
+        openAiConnectionName: !empty(openAiConnectionName) ? openAiConnectionName : 'aoai-connection'
+        openAiContentSafetyConnectionName: !empty(openAiContentSafetyConnectionName) ? openAiContentSafetyConnectionName : 'aoai-content-safety-connection'
+        openAiModelDeployments: array(contains(aiConfig, 'deployments') ? aiConfig.deployments : [])
+        logAnalyticsName: !useApplicationInsights
+        ? ''
+        : !empty(logAnalyticsWorkspaceName)
+            ? logAnalyticsWorkspaceName
+            : '${abbrs.operationalInsightsWorkspaces}${resourceToken}'
+        applicationInsightsName: !useApplicationInsights
+        ? ''
+        : !empty(applicationInsightsName) ? applicationInsightsName : '${abbrs.insightsComponents}${resourceToken}'
+        containerRegistryName: !useContainerRegistry
+        ? ''
+        : !empty(containerRegistryName) ? containerRegistryName : '${abbrs.containerRegistryRegistries}${resourceToken}'
+        searchServiceName: !useSearch ? '' : !empty(searchServiceName) ? searchServiceName : '${abbrs.searchSearchServices}${resourceToken}'
+        searchConnectionName: !useSearch ? '' : !empty(searchConnectionName) ? searchConnectionName : 'search-service-connection'
+      }
+    }
    ```
 
-   >**CORS Middleware** is used to allow or restrict cross-origin requests (requests coming from other domains).
+   >This module sets up essential AI infrastructure, such as Azure OpenAI, Key Vault, storage accounts, and log analytics.
 
-1. The next part creates the API endpoint for handling article creation in the application.
+   >It allows customization via parameters like openAiName, keyVaultName, and storageAccountName.
 
-   ```python
-   @app.post("/api/article")
-   @trace
-   async def create_article(task: Task):
-       return StreamingResponse(
-           PromptyStream(
-               "create_article", create(task.research, task.products, task.assignment)
-           ),
-           media_type="text/event-stream",
-       )
+   >Additionally, it handles the setup for application insights and container registries.
+
+1. The next part defines the configuration for deploying a Bing Search resource in Azure. It is set to be deployed globally and provides the search functionality for the application.
+
+   ```bicep
+   module bing 'core/bing/bing-search.bicep' = {
+   name: 'bing'
+   scope: resourceGroup
+   params: {
+      name: 'agent-bing-search'
+      location: 'global'
+      }
+    }
    ```
 
-   >**POST /api/article:** This endpoint accepts a POST request to create an article based on the task details. It uses the PromptyStream to handle real-time streaming of the article creation process.
-  
-1. As you have reviewed `main.py`, now select `orchestrator.py` from left explorer menu. This file is responsible for structured logging for generating, refining, and evaluating articles.
+   >This module configures a Bing Search resource in the global region, which will be used for search-related operations.
 
-1. Navigate to the `create` function, which is the core orchestrator in this code, managing the flow between various agents to produce an article.
+   >The name and location parameters can be customized to define the Bing service's characteristics.
 
-   ```python
-    @trace
-    def create(research_context, product_context, assignment_context, evaluate=True):
-        feedback = "No Feedback"
+1. The next part provisions a container app environment, which includes setting up containerized applications in Azure. It connects the container environment to a container registry and log analytics workspace for monitoring.
 
-        # Research Agent Task
-        yield start_message("researcher")
-        research_result = researcher.research(research_context, feedback)
-        yield complete_message("researcher", research_result)
-
-        # Marketing/Product Agent Task
-        yield start_message("marketing")
-        product_result = product.find_products(product_context)
-        yield complete_message("marketing", product_result)
-
-        # Writing Agent Task
-        yield start_message("writer")
-        yield complete_message("writer", {"start": True})
-        writer_result = writer.write(research_context, research_result, product_context, product_result, assignment_context, feedback)
-
-        # Processing and Editor Feedback
-        full_result = " "
-        for item in writer_result:
-            full_result = full_result + f'{item}'
-            yield complete_message("partial", {"text": item})
-        processed_writer_result = writer.process(full_result)
-        
-        # Editor Agent Task
-        yield start_message("editor")
-        editor_response = editor.edit(processed_writer_result['article'], processed_writer_result["feedback"])
-        yield complete_message("editor", editor_response)
-        yield complete_message("writer", {"complete": True})
+   ```bicep
+    module containerApps 'core/host/container-apps.bicep' = {
+    name: 'container-apps'
+    scope: resourceGroup
+    params: {
+        name: 'app'
+        location: location
+        tags: tags
+        containerAppsEnvironmentName: 'agent-ca-env'
+        containerRegistryName: ai.outputs.containerRegistryName
+        logAnalyticsWorkspaceName: ai.outputs.logAnalyticsWorkspaceName
+    }
+    }
    ```
 
-   >The `@trace` decorator traces function execution, likely capturing each step in distributed tracing tools.
+   >This module defines the container apps environment where containerized applications will be deployed. It connects to the container registry and log analytics workspace, both of which are configured earlier in the AI module.
 
-   >**Researcher Agent:** Starts by invoking the researcher agent with a research_context, gathering topic-specific data. Each agent stage logs a starting and completion message.
+1. The next part is the core of the `API` part of the application. The API app is used to serve backend services.
 
-   >Uses the `product` agent to find relevant products, contributing contextual content for the article. The `writer` agent combines research, product information, and the assignment context to draft the article.
-
-   >After initial writing, the `editor` agent reviews the draft. If it doesn’t meet quality standards, the editor sends feedback to improve content in a loop. Each step yields a `Message` instance to communicate progress, which can be streamed in real-time to a client or logging system.
-
-1. As you reviewed `orchestartor.py`, navigate to `tracing.py` file from the explorer menu. This file helps to trace all the operations and send data for logging and monitoring.
-
-1. In `tracing.py` file, find the `init_tracing` function which is a crucial part of the file.
-
-   ```python
-   def init_tracing(local_tracing: bool = False):
-    if local_tracing:
-        # Use PromptyTracer for local tracing
-        local_trace = PromptyTracer()
-        Tracer.add("PromptyTracer", local_trace.tracer)
-    else:
-        # Use OpenTelemetry tracer with Azure Monitor for remote tracing
-        app_insights = os.getenv("APPINSIGHTS_CONNECTIONSTRING")
-        oteltrace.set_tracer_provider(TracerProvider(sampler=ParentBasedTraceIdRatio(1.0)))
-        oteltrace.get_tracer_provider().add_span_processor(
-            BatchSpanProcessor(AzureMonitorTraceExporter(connection_string=app_insights))
-        )
-        return oteltrace.get_tracer(_tracer)
+   ```bicep
+    module apiContainerApp 'app/api.bicep' = {
+    name: 'api'
+    scope: resourceGroup
+    params: {
+        name: 'agent-api'
+        location: location
+        tags: tags
+        identityName: managedIdentity.outputs.managedIdentityName
+        identityId: managedIdentity.outputs.managedIdentityClientId
+        containerAppsEnvironmentName: containerApps.outputs.environmentName
+        containerRegistryName: containerApps.outputs.registryName
+        openAi_35_turbo_DeploymentName: !empty(openAi_35_turbo_DeploymentName) ? openAi_35_turbo_DeploymentName : 'gpt-35-turbo'
+        openAi_4_DeploymentName: !empty(openAi_4_DeploymentName) ? openAi_4_DeploymentName : 'gpt-4'
+        openAi_4_eval_DeploymentName: !empty(openAi_4_eval_DeploymentName) ? openAi_4_eval_DeploymentName : 'gpt-4-evals'
+        openAiEmbeddingDeploymentName: openAiEmbeddingDeploymentName
+        openAiEndpoint: ai.outputs.openAiEndpoint
+        openAiName: ai.outputs.openAiName
+        openAiType: openAiType
+        openAiApiVersion: openAiApiVersion
+        aiSearchEndpoint: ai.outputs.searchServiceEndpoint
+        aiSearchIndexName: aiSearchIndexName
+        appinsights_Connectionstring: ai.outputs.applicationInsightsConnectionString
+        bingApiEndpoint: bing.outputs.endpoint
+        bingApiKey: bing.outputs.bingApiKey
+    }
+    }
    ```
 
-   > **Local vs. Remote Tracing:** local_tracing determines if the tracing uses a local `PromptyTracer` (useful for debugging without external dependencies) or OpenTelemetry with Azure Monitor, enabling insights on Azure’s Application Insights.
+   >The apiContainerApp module sets up the backend API containerized application, including identity and OpenAI model deployments.
 
-   >**Azure Monitor Integration:** The `AzureMonitorTraceExporter` sends trace data to Azure, providing remote monitoring of spans and trace data for performance and diagnostics.
+1. The last part will provision the `web` part of the application which server frontend interfaces.
+
+   ```bicep
+    module webContainerApp 'app/web.bicep' = {
+    name: 'web'
+    scope: resourceGroup
+    params: {
+        name: 'agent-web'
+        location: location
+        tags: tags
+        identityName: managedIdentity.outputs.managedIdentityName
+        identityId: managedIdentity.outputs.managedIdentityClientId
+        containerAppsEnvironmentName: containerApps.outputs.environmentName
+        containerRegistryName: containerApps.outputs.registryName
+        apiEndpoint: apiContainerApp.outputs.SERVICE_ACA_URI
+    }
+    }
+   ```
+
+   >The webContainerApp module configures the frontend web application, which connects to the API container. These modules ensure that the API and web applications are deployed within the container environment, leveraging services like OpenAI and Bing.
+
+### Task2: Streamlining Azure Resource Deployment with azd
+
+In this task, you will be using the Azure Developer CLI (azd) to deploy the resources defined in your Bicep templates to Azure. The Azure Developer CLI simplifies the process of managing infrastructure as code, allowing you to efficiently deploy, manage, and monitor your applications and resources directly from the command line.
+
+1. As you are on **Visual Studio Code** pane, open **New terminal** from **Terminal** menu using the top menu bar.
+
+   ![](../media/ex1img1.png)
+
+1. Once the terminal is open, select **v (1)** from the right corner and select **Git Bash (2)** from the menu.
+
+   ![](../media/ex1img2.png)
+
+   >**LabTip: Git Bash** is a command-line tool for Windows that lets users run Git commands and Unix-like shell commands.
+
+1. Once the **GitBash** terminal opened, run the following command to Sign in and authenticate the azd tool.
+
+   ```bash
+   azd auth login
+   ```
+1. Once you run this command, a sign in page will be opened in your browser. Please use these credentials to sign in.
+
+   - **Username:** <inject key="AzureAdUserEmail"></inject> and click on **Next**.
+
+      ![](../media/gs-06.png)
+
+   - **Password:** <inject key="AzureAdUserPassword"></inject> and click on **Sign in**.
+
+      ![](../media/gs-07.png)
+
+1. Once you logged in successfully, navigate back to your **GitBash** terminal and run the following command to authenticate **Azure CLI** tool aswell.
+
+   ```bash
+   az login
+   ```
+   >Note: You may need to minimize Visual Studio Code pane to see the pop up window to sign in.
+
+1. Once you are on the pop up window, select **Work or school account** and click on **Continue**.
+
+   ![](../media/ex1img3.png)
+
+1. In the sign in page, provide the following:
+
+   Username: <inject key="AzureAdUserEmail"></inject> and click on **Next**.
+
+   ![](../media/ex1img4.png)
+
+   Password: <inject key="AzureAdUserPassword"></inject> and click on **Sign in**.
+
+   ![](../media/ex1img5.png)
+
+1. When prompts, click on **No, sign in to this app only** and continue.
+
+1. Return to your **Visual Studio Code** terminal, now it prompts you to select subscription with a list of subscriptions, enter **1** and hit enter.
+
+1. Once you have successfully logged in, run the following command which will deploy all the defined resources in Azure.
+
+   ```
+   azd up
+   ```
+
+   >This may take upto 15 minutes to deploy all the rsources, till then please move to next exercise as that is a read-only exercise where you will get to know the core application and technology stacks used.
 
 ## Summary
 
-In this exercise, you have reviewed and analyzed three key code files that collectively establish a FastAPI application with integrated task orchestration and tracing. You explored the application’s core setup, examined the workflow of agents that handle different task components, and assessed the tracing configuration using OpenTelemetry and Azure Monitor. This review provided an understanding of how the application handles API requests, manages task flows, and sets up monitoring for performance insights and error tracking.
+In this exercise, you have learned how to use the Azure Developer CLI (AZD) to deploy resources for your application. You explored how to define and configure infrastructure using a Bicep file, initialized tracing for monitoring, and successfully deployed resources such as container apps and AI environments using AZD.
 
-### You have successfully comepleted this exercise!!
+### you have successfully completed this exercise!!
+
+
 
 
 
