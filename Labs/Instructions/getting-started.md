@@ -78,17 +78,25 @@ Feel free to start, stop, or restart your virtual machine as needed from the Res
 
 ## Let's Get Started with Azure Portal
 
-1. In the JumpVM, click on Azure portal shortcut of Microsoft Edge browser which is created on desktop.
+1. In the JumpVM, click on **Azure portal** shortcut of Microsoft Edge browser which is created on desktop.
+
+   ![](../media/gs-05.png)
 
 2. On **Sign into Microsoft Azure** tab you will see login screen, in that enter following email/username and then click on **Next**.
 
    - Email/Username: <inject key="AzureAdUserEmail"></inject>
+     
+     ![](../media/gs-06.png)
 
 3. Now enter the following password and click on **Sign in**.
 
    - Password: <inject key="AzureAdUserPassword"></inject>
 
+     ![](../media/gs-07.png)
+
    >**Note:** If you see the Action Required dialog box, then select Ask Later option.
+
+   ![](../media/gs-08.png)
 
 4. If you see the pop-up **Stay Signed in?**, click No.
 

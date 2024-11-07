@@ -1,6 +1,6 @@
-# Exercise 1: Exploring the Building Blocks of the Application
+# Exercise 1: Exploring the Building Blocks of the Application [Read-Only]
 
-### Estimated Duration: 15 minutes
+### Estimated Duration: 30 minutes
 
 ## Lab Scenario
 
@@ -10,21 +10,10 @@ In this exercise, you will review the source code of creative writer application
 
 After you complete this exercise, you will understand:
 
-- Navigate to source code directory
 - Know the technology stacks used
 - Review source code files
 
-### Task1: Navigate to Source Code Directory
-
-1. In your LabVM desktop, open **Visual Studio Code**.
-
-1. On **Visual Studio Code** pane, select **Open Folder** under **file** menu from top menu.
-
-1. Navigate to `C:\contoso\contoso-creative-writer` directory, click on **Select folder**.
-
-1. Once you have the **contoso-creative-writer** directory opened, ensure you have the source code files from the **explorer pane**
-
-### Task2: Know the Technology Stacks used
+### Task2: Know the Technology Stacks used 
 
 In this task, you will familiarize yourself with the various technologies that power the Contoso Creative Writer application. The app leverages a combination of powerful tools and frameworks to help you write well-researched, product-specific articles. As you explore the code, you will learn about the following key technology stacks:
 
@@ -68,7 +57,9 @@ In this task, you will familiarize yourself with the various technologies that p
 
   - ***Reference :*** [Azure AI Search](https://learn.microsoft.com/en-us/azure/search/search-what-is-azure-search)
 
-### Task3: Review source code files [Read-Only]
+### Task3: Review source code files 
+
+In this task, you will review three core code files that together initialize a FastAPI application with tracing and orchestration capabilities. You’ll analyze the main application setup, task flow with agents, and tracing configuration using OpenTelemetry and Azure Monitor, gaining insight into API handling, task management, and monitoring setup.
 
 1. From the explorer menu of **visual Studio Code**, navigate to `/src/api/main.py` file and review the codes.
 
@@ -155,6 +146,82 @@ In this task, you will familiarize yourself with the various technologies that p
    ```
 
    >**POST /api/article:** This endpoint accepts a POST request to create an article based on the task details. It uses the PromptyStream to handle real-time streaming of the article creation process.
+  
+1. As you have reviewed `main.py`, now select `orchestrator.py` from left explorer menu. This file is responsible for structured logging for generating, refining, and evaluating articles.
+
+1. Navigate to the `create` function, which is the core orchestrator in this code, managing the flow between various agents to produce an article.
+
+   ```python
+    @trace
+    def create(research_context, product_context, assignment_context, evaluate=True):
+        feedback = "No Feedback"
+
+        # Research Agent Task
+        yield start_message("researcher")
+        research_result = researcher.research(research_context, feedback)
+        yield complete_message("researcher", research_result)
+
+        # Marketing/Product Agent Task
+        yield start_message("marketing")
+        product_result = product.find_products(product_context)
+        yield complete_message("marketing", product_result)
+
+        # Writing Agent Task
+        yield start_message("writer")
+        yield complete_message("writer", {"start": True})
+        writer_result = writer.write(research_context, research_result, product_context, product_result, assignment_context, feedback)
+
+        # Processing and Editor Feedback
+        full_result = " "
+        for item in writer_result:
+            full_result = full_result + f'{item}'
+            yield complete_message("partial", {"text": item})
+        processed_writer_result = writer.process(full_result)
+        
+        # Editor Agent Task
+        yield start_message("editor")
+        editor_response = editor.edit(processed_writer_result['article'], processed_writer_result["feedback"])
+        yield complete_message("editor", editor_response)
+        yield complete_message("writer", {"complete": True})
+   ```
+
+   >The `@trace` decorator traces function execution, likely capturing each step in distributed tracing tools.
+
+   >**Researcher Agent:** Starts by invoking the researcher agent with a research_context, gathering topic-specific data. Each agent stage logs a starting and completion message.
+
+   >Uses the `product` agent to find relevant products, contributing contextual content for the article. The `writer` agent combines research, product information, and the assignment context to draft the article.
+
+   >After initial writing, the `editor` agent reviews the draft. If it doesn’t meet quality standards, the editor sends feedback to improve content in a loop. Each step yields a `Message` instance to communicate progress, which can be streamed in real-time to a client or logging system.
+
+1. As you reviewed `orchestartor.py`, navigate to `tracing.py` file from the explorer menu. This file helps to trace all the operations and send data for logging and monitoring.
+
+1. In `tracing.py` file, find the `init_tracing` function which is a crucial part of the file.
+
+   ```python
+   def init_tracing(local_tracing: bool = False):
+    if local_tracing:
+        # Use PromptyTracer for local tracing
+        local_trace = PromptyTracer()
+        Tracer.add("PromptyTracer", local_trace.tracer)
+    else:
+        # Use OpenTelemetry tracer with Azure Monitor for remote tracing
+        app_insights = os.getenv("APPINSIGHTS_CONNECTIONSTRING")
+        oteltrace.set_tracer_provider(TracerProvider(sampler=ParentBasedTraceIdRatio(1.0)))
+        oteltrace.get_tracer_provider().add_span_processor(
+            BatchSpanProcessor(AzureMonitorTraceExporter(connection_string=app_insights))
+        )
+        return oteltrace.get_tracer(_tracer)
+   ```
+
+   > **Local vs. Remote Tracing:** local_tracing determines if the tracing uses a local `PromptyTracer` (useful for debugging without external dependencies) or OpenTelemetry with Azure Monitor, enabling insights on Azure’s Application Insights.
+
+   >**Azure Monitor Integration:** The `AzureMonitorTraceExporter` sends trace data to Azure, providing remote monitoring of spans and trace data for performance and diagnostics.
+
+## Summary
+
+In this exercise, you have reviewed and analyzed three key code files that collectively establish a FastAPI application with integrated task orchestration and tracing. You explored the application’s core setup, examined the workflow of agents that handle different task components, and assessed the tracing configuration using OpenTelemetry and Azure Monitor. This review provided an understanding of how the application handles API requests, manages task flows, and sets up monitoring for performance insights and error tracking.
+
+### You have successfully comepleted this exercise!!
 
 
 
