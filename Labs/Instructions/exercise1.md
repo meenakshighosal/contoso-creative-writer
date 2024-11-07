@@ -24,17 +24,23 @@ In this task, you will gain an understanding of the Azure Developer CLI (azd) an
 
 1. On **Visual Studio Code** pane, select **Open Folder** under **file** menu from top menu.
 
-    ![](../media/ex1img6.png)
+   ![](../media/ex1img6.png)
 
-1. Navigate to `C:\contoso\contoso-creative-writer` directory, click on **Select folder**.
+1. Navigate to `C:\creative-writer\contoso-creative-writer-stage` directory, click on **Select folder**.
+
+   ![](../media/ex1newimg1.png)
 
 1. Once you open the folder in Visual Studio Code, on Do you trust the authors of the files of this folder? pop up, click on Yes, I trust the authors.
 
    ![](../media/ex1img7.png)
 
-1. Once you have the **contoso-creative-writer** directory opened, ensure you have the source code files from the **explorer pane**
+1. Once you have the **contoso-creative-writer-stage** directory opened, ensure you have the source code files from the **explorer pane**
 
+   ![](../media/ex1newimg2.png)
+   
 1. From the explorer menu, navigate to `/infra/main.bicep` file to review. A Bicep file is a simplified, readable syntax for defining and deploying Azure resources, which is compiled into ARM templates for deployment.
+
+   ![](../media/ex1newimg3.png)
 
 1. In the `main.bicep`. navigate to **ai** module definition.
  
@@ -227,6 +233,14 @@ In this task, you will be using the Azure Developer CLI (azd) to deploy the reso
    ```
    azd up
    ```
+
+1. Once you run this command it will prompt to select subscription, just hit enter and continue.
+
+   ![](../media/ex1newimg4.png)
+
+1. In the next prompt, it will ask to select location. Use the arrow keys and select **Canada East** region from the list.
+
+   ![](../media/ex1newimg5.png)
 
    >This may take upto 15 minutes to deploy all the rsources, till then please move to next exercise as that is a read-only exercise where you will get to know the core application and technology stacks used.
 

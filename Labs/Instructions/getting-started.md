@@ -56,25 +56,25 @@ Welcome to your Build Creative App using Azure AI and Prompty Lab! We've prepare
 
 Once you're ready to dive in, your virtual machine and lab guide will be right at your fingertips within your web browser.
 
-[img1]
+![](../media/gs1.png)
 
 ### Exploring Your Lab Resources
 
 To get a better understanding of your lab resources and credentials, navigate to the Environment tab.
 
-[img]
+![](../media/gs2.png)
 
 ### Utilizing the Split Window Feature
 
 For convenience, you can open the lab guide in a separate window by selecting the Split Window button from the Top right corner
 
-[img]
+![](../media/gs3.png)
 
 ### Managing Your Virtual Machine
 
 Feel free to start, stop, or restart your virtual machine as needed from the Resources tab. Your experience is in your hands!
 
-[img]
+![](../media/gs4.png)
 
 ## Let's Get Started with Azure Portal
 
