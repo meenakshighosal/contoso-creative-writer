@@ -82,6 +82,8 @@ Feel free to start, stop, or restart your virtual machine as needed from the Res
 
    ![](../media/gs-05.png)
 
+   >If a powershell window openes up, please minimize it and continue with the lab. Make sure you do not close that window.
+
 2. On **Sign into Microsoft Azure** tab you will see login screen, in that enter following email/username and then click on **Next**.
 
    - Email/Username: <inject key="AzureAdUserEmail"></inject>
@@ -94,9 +96,9 @@ Feel free to start, stop, or restart your virtual machine as needed from the Res
 
      ![](../media/gs-07.png)
 
-   >**Note:** If you see the Action Required dialog box, then select Ask Later option.
+     >**Note:** If you see the Action Required dialog box, then select Ask Later option.
 
-   ![](../media/gs-08.png)
+     ![](../media/gs-08.png)
 
 4. If you see the pop-up **Stay Signed in?**, click No.
 
