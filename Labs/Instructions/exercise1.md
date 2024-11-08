@@ -101,79 +101,6 @@ In this task, you will gain an understanding of the Azure Developer CLI (azd) an
 
    >The name and location parameters can be customized to define the Bing service's characteristics.
 
-1. The next part provisions a container app environment, which includes setting up containerized applications in Azure. It connects the container environment to a container registry and log analytics workspace for monitoring.
-
-   ```bicep
-    module containerApps 'core/host/container-apps.bicep' = {
-    name: 'container-apps'
-    scope: resourceGroup
-    params: {
-        name: 'app'
-        location: location
-        tags: tags
-        containerAppsEnvironmentName: 'agent-ca-env'
-        containerRegistryName: ai.outputs.containerRegistryName
-        logAnalyticsWorkspaceName: ai.outputs.logAnalyticsWorkspaceName
-    }
-    }
-   ```
-
-   >This module defines the container apps environment where containerized applications will be deployed. It connects to the container registry and log analytics workspace, both of which are configured earlier in the AI module.
-
-1. The next part is the core of the `API` part of the application. The API app is used to serve backend services.
-
-   ```bicep
-    module apiContainerApp 'app/api.bicep' = {
-    name: 'api'
-    scope: resourceGroup
-    params: {
-        name: 'agent-api'
-        location: location
-        tags: tags
-        identityName: managedIdentity.outputs.managedIdentityName
-        identityId: managedIdentity.outputs.managedIdentityClientId
-        containerAppsEnvironmentName: containerApps.outputs.environmentName
-        containerRegistryName: containerApps.outputs.registryName
-        openAi_35_turbo_DeploymentName: !empty(openAi_35_turbo_DeploymentName) ? openAi_35_turbo_DeploymentName : 'gpt-35-turbo'
-        openAi_4_DeploymentName: !empty(openAi_4_DeploymentName) ? openAi_4_DeploymentName : 'gpt-4'
-        openAi_4_eval_DeploymentName: !empty(openAi_4_eval_DeploymentName) ? openAi_4_eval_DeploymentName : 'gpt-4-evals'
-        openAiEmbeddingDeploymentName: openAiEmbeddingDeploymentName
-        openAiEndpoint: ai.outputs.openAiEndpoint
-        openAiName: ai.outputs.openAiName
-        openAiType: openAiType
-        openAiApiVersion: openAiApiVersion
-        aiSearchEndpoint: ai.outputs.searchServiceEndpoint
-        aiSearchIndexName: aiSearchIndexName
-        appinsights_Connectionstring: ai.outputs.applicationInsightsConnectionString
-        bingApiEndpoint: bing.outputs.endpoint
-        bingApiKey: bing.outputs.bingApiKey
-    }
-    }
-   ```
-
-   >The apiContainerApp module sets up the backend API containerized application, including identity and OpenAI model deployments.
-
-1. The last part will provision the `web` part of the application which server frontend interfaces.
-
-   ```bicep
-    module webContainerApp 'app/web.bicep' = {
-    name: 'web'
-    scope: resourceGroup
-    params: {
-        name: 'agent-web'
-        location: location
-        tags: tags
-        identityName: managedIdentity.outputs.managedIdentityName
-        identityId: managedIdentity.outputs.managedIdentityClientId
-        containerAppsEnvironmentName: containerApps.outputs.environmentName
-        containerRegistryName: containerApps.outputs.registryName
-        apiEndpoint: apiContainerApp.outputs.SERVICE_ACA_URI
-    }
-    }
-   ```
-
-   >The webContainerApp module configures the frontend web application, which connects to the API container. These modules ensure that the API and web applications are deployed within the container environment, leveraging services like OpenAI and Bing.
-
 ### Task2: Streamlining Azure Resource Deployment with azd
 
 In this task, you will be using the Azure Developer CLI (azd) to deploy the resources defined in your Bicep templates to Azure. The Azure Developer CLI simplifies the process of managing infrastructure as code, allowing you to efficiently deploy, manage, and monitor your applications and resources directly from the command line.
@@ -193,15 +120,7 @@ In this task, you will be using the Azure Developer CLI (azd) to deploy the reso
    ```bash
    azd auth login
    ```
-1. Once you run this command, a sign in page will be opened in your browser. Please use these credentials to sign in.
-
-   - **Username:** <inject key="AzureAdUserEmail"></inject> and click on **Next**.
-
-      ![](../media/gs-06.png)
-
-   - **Password:** <inject key="AzureAdUserPassword"></inject> and click on **Sign in**.
-
-      ![](../media/gs-07.png)
+1. Once you run this command, a sign in page opens up, as you have already logged in to portal you just need to select your account and click continue.
 
 1. Once you logged in successfully, navigate back to your **GitBash** terminal and run the following command to authenticate **Azure CLI** tool aswell.
 

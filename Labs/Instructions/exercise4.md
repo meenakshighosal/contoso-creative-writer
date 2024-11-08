@@ -16,17 +16,21 @@ After you complete this exercise, you will be able to:
 
 In this task, you will run the orchestrator logic to simulate the application flow and enable tracing for debugging purposes. By doing so, you'll track the execution of Python functions and capture detailed traces, which will help in diagnosing any issues within the application's logic.
 
-1. Navigate back to your **Git Bash** terminal, run the following command to go back to `/src/api` directory.
+1. Navigate back to your **Git Bash** terminal, and open new **Git Bash** terminal and run the following command to go back to `/src/api` directory.
 
    ```bash
-   cd /src/api
+   cd src/api
    ```
+
+   >Make sure you are running this in a new **Git Bash** terminal tab, because the application should be running.
 
 1. Now as you are inside `api` directory, run the below command to run the orchestartor.
 
    ```bash
    python -m orchestrator
    ```
+
+   ![](../media/ex3img2.png)
 
    >**LabTip:** The `orchestrator` manages and coordinates the execution of tasks in the application, ensuring components work together seamlessly.
 
@@ -47,9 +51,9 @@ In this task, you will run the orchestrator logic to simulate the application fl
    python -m orchestrator
    ```
 
-1. Navigate back to your application which is running on browser. Genrate a article to check the working of orchestrator.
+   ![](../media/ex3img3.png)
 
-1. Once you can see the article has been generated, a `.runs` folder should appear in the `./src/api` . Select this folder and click the `.tracy` file in it. This shows you all the Python functions that were called in order to generate the article. Explore each section and see what helpful information you can find.
+1. Navigate back to your application which is running on browser. Genrate a article to check the working of orchestrator.
 
 ### Task2: Evaluate Application Response Quality
 
@@ -68,6 +72,8 @@ In this task, you will evaluate the quality of the application’s responses usi
    ```bash
    python -m evaluate.evaluate
    ```
+
+   ![](../media/ex3img1.png)
 
    >Wait till the process is successfully completed and the results are generated.
 

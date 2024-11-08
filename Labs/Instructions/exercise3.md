@@ -19,7 +19,7 @@ In this task, you will learn how to test the application locally by running both
 1. As the **Visual Studio Code** is already open, navigate back to your **Git Bash** terminal and navigate to `/src/api` from the explorer menu. 
 
    ```bash
-   cd /src/api
+   cd src/api
    ```
 
 1. Now as you are inside `api` directory, run the following command to start your **API** component.
@@ -32,12 +32,14 @@ In this task, you will learn how to test the application locally by running both
 
 1. Now to run the **WEB (Frontend)** you have to open a new tab on terminal.
 
-1. From the top right corner, click on **+** and select **Git Bash** to open a new tab of Git Bash terminal.
+1. From the top right corner, click on **v (1)** and select **Git Bash (2)** to open a new tab of Git Bash terminal.
+
+   ![](../media/ex1img2.png)
 
 1. Once you are in the new tab in **Git Bash** terminal, navigate to `/src/web` directory.
 
    ```bash
-   cd /src/web
+   cd src/web
    ```
 
 1. Now that you have navigated to `web` directory, run the following command first to install all the dependencies and setup the environment.
@@ -54,21 +56,33 @@ In this task, you will learn how to test the application locally by running both
    
    >By running this command, the frontend will be started on your local system. Make sure you don't close the terminal tab.
 
-1. As both components of the application is running, open your browser and use the following url to verify that application is running.
+1. Now you will see the URL for the application which is running locally. To access that hover over the link and do **CTRL+Click**, it will directly navigate to the application interface.
 
-   ```
-   http://127.0.0.1/5173
-   ```
+   ![](../media/ex2img7.png)
 
 1. Once you navigate to your application, you'll be seeing a interface similar to this.
 
+   ![](../media/ex2img6.png)
+
 1. On the application pane, click on **Example** to genrate a example prompt for the article generation. 
+
+   ![](../media/ex2img5.png)
 
 1. Now as the propmpt is ready, click on **Start Work** to generate the article.
 
+   ![](../media/ex2img4.png)
+
    >It will take sometime to generate the article, please wait till it generate.
 
+   ![](../media/ex2img3.png)
+
 1. Now as the article is generated, you can click on **Debug** symbol from the bottom right corner to check how the process are going on in the backend.
+
+   ![](../media/ex2img2.png)
+
+   >This will open up a new tab from right in which you will be able to trace allthe processes happening in backend.
+
+   ![](../media/ex2img1.png)
 
 1. Now you can try modifiying the example prompt and change the topic and instruction to play with the application.
 
