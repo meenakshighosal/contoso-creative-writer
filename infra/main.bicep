@@ -1,4 +1,4 @@
-targetScope = 'subscription'
+targetScope = 'resourceGroup'
 
 @minLength(1)
 @maxLength(64)
@@ -44,14 +44,14 @@ var abbrs = loadJsonContent('./abbreviations.json')
 @description('The log analytics workspace name. If ommited will be generated')
 param logAnalyticsWorkspaceName string = ''
 param useApplicationInsights bool = true
-param useContainerRegistry bool = true
+param useContainerRegistry bool = false
 param useSearch bool = true
 var aiConfig = loadYamlContent('./ai.yaml')
 @description('The name of the machine learning online endpoint. If ommited will be generated')
 param endpointName string = ''
 @description('The name of the azd service to use for the machine learning endpoint')
 param endpointServiceName string = 'chat'
-param resourceGroupName string = ''
+param resourceGroupName string = 'rg-creative'
 
 @description('The Azure Search connection name. If ommited will use a default value')
 param searchConnectionName string = ''
@@ -97,17 +97,17 @@ param runningOnAdo string = ''
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName }
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
-  location: location
-  tags: tags
-}
+// resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+//   name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
+//   location: location
+//   tags: tags
+// }
 
 // USER ROLES
 var principalType = empty(runningOnGh) && empty(runningOnAdo) ? 'User' : 'ServicePrincipal'
 module managedIdentity 'core/security/managed-identity.bicep' = {
   name: 'managed-identity'
-  scope: resourceGroup
+  scope: resourceGroup(resourceGroupName)
   params: {
     name: 'id-${resourceToken}'
     location: location
@@ -117,7 +117,7 @@ module managedIdentity 'core/security/managed-identity.bicep' = {
 
 module ai 'core/host/ai-environment.bicep' = {
   name: 'ai'
-  scope: resourceGroup
+  scope: resourceGroup(resourceGroupName)
   params: {
     location: location
     tags: tags
@@ -149,71 +149,71 @@ module ai 'core/host/ai-environment.bicep' = {
 
 module bing 'core/bing/bing-search.bicep' = {
   name: 'bing'
-  scope: resourceGroup
+  scope: resourceGroup(resourceGroupName)
   params: {
     name: 'agent-bing-search'
     location: 'global'
   }
 }
 
-// Container apps host (including container registry)
-module containerApps 'core/host/container-apps.bicep' = {
-  name: 'container-apps'
-  scope: resourceGroup
-  params: {
-    name: 'app'
-    location: location
-    tags: tags
-    containerAppsEnvironmentName: 'agent-ca-env'
-    containerRegistryName: ai.outputs.containerRegistryName
-    logAnalyticsWorkspaceName: ai.outputs.logAnalyticsWorkspaceName
-  }
-}
+// // Container apps host (including container registry)
+// module containerApps 'core/host/container-apps.bicep' = {
+//   name: 'container-apps'
+//   scope: resourceGroup
+//   params: {
+//     name: 'app'
+//     location: location
+//     tags: tags
+//     containerAppsEnvironmentName: 'agent-ca-env'
+//     containerRegistryName: ai.outputs.containerRegistryName
+//     logAnalyticsWorkspaceName: ai.outputs.logAnalyticsWorkspaceName
+//   }
+// }
 
-module apiContainerApp 'app/api.bicep' = {
-  name: 'api'
-  scope: resourceGroup
-  params: {
-    name: 'agent-api'
-    location: location
-    tags: tags
-    identityName: managedIdentity.outputs.managedIdentityName
-    identityId: managedIdentity.outputs.managedIdentityClientId
-    containerAppsEnvironmentName: containerApps.outputs.environmentName
-    containerRegistryName: containerApps.outputs.registryName
-    openAi_35_turbo_DeploymentName: !empty(openAi_35_turbo_DeploymentName) ? openAi_35_turbo_DeploymentName : 'gpt-35-turbo'
-    openAi_4_DeploymentName: !empty(openAi_4_DeploymentName) ? openAi_4_DeploymentName : 'gpt-4'
-    openAi_4_eval_DeploymentName: !empty(openAi_4_eval_DeploymentName) ? openAi_4_eval_DeploymentName : 'gpt-4-evals'
-    openAiEmbeddingDeploymentName: openAiEmbeddingDeploymentName
-    openAiEndpoint: ai.outputs.openAiEndpoint
-    openAiName: ai.outputs.openAiName
-    openAiType: openAiType
-    openAiApiVersion: openAiApiVersion
-    aiSearchEndpoint: ai.outputs.searchServiceEndpoint
-    aiSearchIndexName: aiSearchIndexName
-    appinsights_Connectionstring: ai.outputs.applicationInsightsConnectionString
-    bingApiEndpoint: bing.outputs.endpoint
-    bingApiKey: bing.outputs.bingApiKey
-  }
-}
+// module apiContainerApp 'app/api.bicep' = {
+//   name: 'api'
+//   scope: resourceGroup
+//   params: {
+//     name: 'agent-api'
+//     location: location
+//     tags: tags
+//     identityName: managedIdentity.outputs.managedIdentityName
+//     identityId: managedIdentity.outputs.managedIdentityClientId
+//     // containerAppsEnvironmentName: containerApps.outputs.environmentName
+//     // containerRegistryName: containerApps.outputs.registryName
+//     openAi_35_turbo_DeploymentName: !empty(openAi_35_turbo_DeploymentName) ? openAi_35_turbo_DeploymentName : 'gpt-35-turbo'
+//     openAi_4_DeploymentName: !empty(openAi_4_DeploymentName) ? openAi_4_DeploymentName : 'gpt-4'
+//     openAi_4_eval_DeploymentName: !empty(openAi_4_eval_DeploymentName) ? openAi_4_eval_DeploymentName : 'gpt-4-evals'
+//     openAiEmbeddingDeploymentName: openAiEmbeddingDeploymentName
+//     openAiEndpoint: ai.outputs.openAiEndpoint
+//     openAiName: ai.outputs.openAiName
+//     openAiType: openAiType
+//     openAiApiVersion: openAiApiVersion
+//     aiSearchEndpoint: ai.outputs.searchServiceEndpoint
+//     aiSearchIndexName: aiSearchIndexName
+//     appinsights_Connectionstring: ai.outputs.applicationInsightsConnectionString
+//     bingApiEndpoint: bing.outputs.endpoint
+//     bingApiKey: bing.outputs.bingApiKey
+//   }
+// }
 
-module webContainerApp 'app/web.bicep' = {
-  name: 'web'
-  scope: resourceGroup
-  params: {
-    name: 'agent-web'
-    location: location
-    tags: tags
-    identityName: managedIdentity.outputs.managedIdentityName
-    identityId: managedIdentity.outputs.managedIdentityClientId
-    containerAppsEnvironmentName: containerApps.outputs.environmentName
-    containerRegistryName: containerApps.outputs.registryName
-    apiEndpoint: apiContainerApp.outputs.SERVICE_ACA_URI
-  }
-}
+// module webContainerApp 'app/web.bicep' = {
+//   name: 'web'
+//   scope: resourceGroup
+//   params: {
+//     name: 'agent-web'
+//     location: location
+//     tags: tags
+//     identityName: managedIdentity.outputs.managedIdentityName
+//     identityId: managedIdentity.outputs.managedIdentityClientId
+//     // containerAppsEnvironmentName: containerApps.outputs.environmentName
+//     // containerRegistryName: containerApps.outputs.registryName
+//     apiEndpoint: apiContainerApp.outputs.SERVICE_ACA_URI
+//   }
+// }
 
 module aiSearchRole 'core/security/role.bicep' = {
-  scope: resourceGroup
+  scope: resourceGroup(resourceGroupName)
   name: 'ai-search-index-data-contributor'
   params: {
     principalId: managedIdentity.outputs.managedIdentityPrincipalId
@@ -224,7 +224,7 @@ module aiSearchRole 'core/security/role.bicep' = {
 
 
 module appinsightsAccountRole 'core/security/role.bicep' = {
-  scope: resourceGroup
+  scope: resourceGroup(resourceGroupName)
   name: 'appinsights-account-role'
   params: {
     principalId: managedIdentity.outputs.managedIdentityPrincipalId
@@ -234,7 +234,7 @@ module appinsightsAccountRole 'core/security/role.bicep' = {
 }
 
 module userAiSearchRole 'core/security/role.bicep' = if (!empty(principalId)) {
-  scope: resourceGroup
+  scope: resourceGroup(resourceGroupName)
   name: 'user-ai-search-index-data-contributor'
   params: {
     principalId: principalId
@@ -244,7 +244,7 @@ module userAiSearchRole 'core/security/role.bicep' = if (!empty(principalId)) {
 }
 
 module searchRoleUser 'core/security/role.bicep' = {
-  scope: resourceGroup
+  scope: resourceGroup(resourceGroupName)
   name: 'search-role-user'
   params: {
     principalId: principalId
@@ -254,7 +254,7 @@ module searchRoleUser 'core/security/role.bicep' = {
 }
 
 module searchContribRoleUser 'core/security/role.bicep' = {
-  scope: resourceGroup
+  scope: resourceGroup(resourceGroupName)
   name: 'search-contrib-role-user'
   params: {
     principalId: principalId
@@ -264,7 +264,7 @@ module searchContribRoleUser 'core/security/role.bicep' = {
 }
 
 module searchSvcContribRoleUser 'core/security/role.bicep' = {
-  scope: resourceGroup
+  scope: resourceGroup(resourceGroupName)
   name: 'search-svccontrib-role-user'
   params: {
     principalId: principalId
@@ -274,7 +274,7 @@ module searchSvcContribRoleUser 'core/security/role.bicep' = {
 }
 
 module openaiRoleUser 'core/security/role.bicep' = if (!empty(principalId)) {
-  scope: resourceGroup
+  scope: resourceGroup(resourceGroupName)
   name: 'user-openai-user'
   params: {
     principalId: principalId
@@ -284,7 +284,7 @@ module openaiRoleUser 'core/security/role.bicep' = if (!empty(principalId)) {
 }
 
 output AZURE_LOCATION string = location
-output AZURE_RESOURCE_GROUP string = resourceGroup.name
+output AZURE_RESOURCE_GROUP string = resourceGroupName
 
 output AZURE_OPENAI_35_TURBO_DEPLOYMENT_NAME string = openAi_35_turbo_DeploymentName
 output AZURE_OPENAI_DEPLOYMENT_NAME string = openAi_4_DeploymentName
@@ -292,21 +292,21 @@ output AZURE_OPENAI_4_EVAL_DEPLOYMENT_NAME string = openAi_4_eval_DeploymentName
 output AZURE_OPENAI_API_VERSION string = openAiApiVersion
 output AZURE_OPENAI_ENDPOINT string = ai.outputs.openAiEndpoint
 output AZURE_OPENAI_NAME string = ai.outputs.openAiName
-output AZURE_OPENAI_RESOURCE_GROUP string = resourceGroup.name
+output AZURE_OPENAI_RESOURCE_GROUP string = resourceGroupName
 output AZURE_AI_PROJECT_NAME string = ai.outputs.projectName
-output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = resourceGroup.location
+output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = location
 
-output API_SERVICE_ACA_NAME string = apiContainerApp.outputs.SERVICE_ACA_NAME
-output API_SERVICE_ACA_URI string = apiContainerApp.outputs.SERVICE_ACA_URI
-output API_SERVICE_ACA_IMAGE_NAME string = apiContainerApp.outputs.SERVICE_ACA_IMAGE_NAME
+// output API_SERVICE_ACA_NAME string = apiContainerApp.outputs.SERVICE_ACA_NAME
+// output API_SERVICE_ACA_URI string = apiContainerApp.outputs.SERVICE_ACA_URI
+// output API_SERVICE_ACA_IMAGE_NAME string = apiContainerApp.outputs.SERVICE_ACA_IMAGE_NAME
 
-output WEB_SERVICE_ACA_NAME string = webContainerApp.outputs.SERVICE_ACA_NAME
-output WEB_SERVICE_ACA_URI string = webContainerApp.outputs.SERVICE_ACA_URI
-output WEB_SERVICE_ACA_IMAGE_NAME string = webContainerApp.outputs.SERVICE_ACA_IMAGE_NAME
+// output WEB_SERVICE_ACA_NAME string = webContainerApp.outputs.SERVICE_ACA_NAME
+// output WEB_SERVICE_ACA_URI string = webContainerApp.outputs.SERVICE_ACA_URI
+// output WEB_SERVICE_ACA_IMAGE_NAME string = webContainerApp.outputs.SERVICE_ACA_IMAGE_NAME
 
-output AZURE_CONTAINER_ENVIRONMENT_NAME string = containerApps.outputs.environmentName
-output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerApps.outputs.registryLoginServer
-output AZURE_CONTAINER_REGISTRY_NAME string = containerApps.outputs.registryName
+// output AZURE_CONTAINER_ENVIRONMENT_NAME string = containerApps.outputs.environmentName
+// output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerApps.outputs.registryLoginServer
+// output AZURE_CONTAINER_REGISTRY_NAME string = containerApps.outputs.registryName
 
 output APPINSIGHTS_CONNECTIONSTRING string = ai.outputs.applicationInsightsConnectionString
 
