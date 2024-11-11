@@ -163,7 +163,7 @@ In this task, you will be using the Azure Developer CLI (azd) to deploy the reso
 
    >This may take upto 15 minutes to deploy all the rsources, till then please move to next exercise as that is a read-only exercise where you will get to know the core application and technology stacks used.
    
-   > If you encounter an error like **error executing step command,** please ignore it and proceed to the next exercise.
+   > If you encounter an error like **error executing step command** please ignore it and proceed to the next exercise.
 
 ## Summary
 
