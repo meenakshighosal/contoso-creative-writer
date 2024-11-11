@@ -1,4 +1,4 @@
-# Exercise1: Deploying Resources with Azure Developer CLI
+# Exercise 1: Deploying Resources with Azure Developer CLI
 
 ### Estimated Duration: 30 minutes
 
@@ -12,7 +12,7 @@ After you complete this exercise, you will:
 
 - Learn to provision and deploy application resources in Azure using the Azure Developer CLI (azd).
 
-### Task1: Understanding Azure Developer CLI and the Deployment Workflow
+### Task 1: Understanding Azure Developer CLI and the Deployment Workflow
 
 In this task, you will gain an understanding of the Azure Developer CLI (azd) and how it facilitates the deployment of cloud resources. You'll explore the main.bicep file, the core infrastructure template for your application, and learn about the primary resources it defines, including key parameters, dependencies, and outputs. By the end, you'll be familiar with how azd uses this file to automate provisioning, setting the foundation for deploying resources with ease in the next steps.
 
@@ -101,7 +101,7 @@ In this task, you will gain an understanding of the Azure Developer CLI (azd) an
 
    >The name and location parameters can be customized to define the Bing service's characteristics.
 
-### Task2: Streamlining Azure Resource Deployment with azd
+### Task 2: Streamlining Azure Resource Deployment with azd
 
 In this task, you will be using the Azure Developer CLI (azd) to deploy the resources defined in your Bicep templates to Azure. The Azure Developer CLI simplifies the process of managing infrastructure as code, allowing you to efficiently deploy, manage, and monitor your applications and resources directly from the command line.
 
@@ -162,6 +162,8 @@ In this task, you will be using the Azure Developer CLI (azd) to deploy the reso
    ![](../media/ex1newimg5.png)
 
    >This may take upto 15 minutes to deploy all the rsources, till then please move to next exercise as that is a read-only exercise where you will get to know the core application and technology stacks used.
+   
+   > If you encounter an error like **error executing step command,** please ignore it and proceed to the next exercise.
 
 ## Summary
 
