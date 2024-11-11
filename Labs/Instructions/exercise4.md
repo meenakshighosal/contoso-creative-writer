@@ -12,7 +12,7 @@ After you complete this exercise, you will be able to:
 
  - Debug the application by running the orchestrator logic and enabling tracing.
 
-### Task1: Debug the application by running the orchestrator logic and enabling tracing.
+### Task 1: Debug the application by running the orchestrator logic and enabling tracing.
 
 In this task, you will run the orchestrator logic to simulate the application flow and enable tracing for debugging purposes. By doing so, you'll track the execution of Python functions and capture detailed traces, which will help in diagnosing any issues within the application's logic.
 
@@ -55,7 +55,7 @@ In this task, you will run the orchestrator logic to simulate the application fl
 
 1. Navigate back to your application which is running on browser. Genrate a article to check the working of orchestrator.
 
-### Task2: Evaluate Application Response Quality
+### Task 2: Evaluate Application Response Quality
 
 In this task, you will evaluate the quality of the application’s responses using predefined metrics. The Contoso Creative Writer project employs evaluators to assess four key aspects: Coherence, Fluency, Relevance, and Groundedness. You will run a custom evaluation script to automatically assess the generated content based on these metrics.
 

@@ -13,7 +13,7 @@ After you complete this exercise, you will understand:
 - Know the technology stacks used
 - Review source code files
 
-### Task2: Know the Technology Stacks used 
+### Task 1: Know the Technology Stacks used 
 
 In this task, you will familiarize yourself with the various technologies that power the Contoso Creative Writer application. The app leverages a combination of powerful tools and frameworks to help you write well-researched, product-specific articles. As you explore the code, you will learn about the following key technology stacks:
 
@@ -57,7 +57,7 @@ In this task, you will familiarize yourself with the various technologies that p
 
   - ***Reference :*** [Azure AI Search](https://learn.microsoft.com/en-us/azure/search/search-what-is-azure-search)
 
-### Task3: Review source code files 
+### Task 2: Review source code files 
 
 In this task, you will review three core code files that together initialize a FastAPI application with tracing and orchestration capabilities. You’ll analyze the main application setup, task flow with agents, and tracing configuration using OpenTelemetry and Azure Monitor, gaining insight into API handling, task management, and monitoring setup.
 
