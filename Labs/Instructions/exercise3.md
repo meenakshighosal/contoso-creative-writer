@@ -12,7 +12,7 @@ After you complete this exercise, you will:
 
  -  Learn to run and verify both Python and Javascript components of the application.
 
-### Task1: Testing the Application Locally: API and Web
+### Task 1: Testing the Application Locally: API and Web
 
 In this task, you will learn how to test the application locally by running both the API and Web parts on your local machine. You will set up the necessary environment, run the components, and verify their functionality.
 
