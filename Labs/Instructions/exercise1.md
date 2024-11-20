@@ -10,7 +10,8 @@ In this exercise, you will deploy the necessary resources for your FastAPI appli
 
 After you complete this exercise, you will:
 
-- Learn to provision and deploy application resources in Azure using the Azure Developer CLI (azd).
+- Understanding Azure Developer CLI and the Deployment Workflow.
+- Streamlining Azure Resource Deployment with Azure Developer CLI (azd)
 
 ### Task 1: Understanding Azure Developer CLI and the Deployment Workflow
 
@@ -101,7 +102,7 @@ In this task, you will gain an understanding of the Azure Developer CLI (azd) an
 
    >The name and location parameters can be customized to define the Bing service's characteristics.
 
-### Task 2: Streamlining Azure Resource Deployment with azd
+### Task 2: Streamlining Azure Resource Deployment with Azure Developer CLI (azd)
 
 In this task, you will be using the Azure Developer CLI (azd) to deploy the resources defined in your Bicep templates to Azure. The Azure Developer CLI simplifies the process of managing infrastructure as code, allowing you to efficiently deploy, manage, and monitor your applications and resources directly from the command line.
 

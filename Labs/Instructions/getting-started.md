@@ -1,10 +1,10 @@
 # Build Creative App using Azure AI and Prompty
 
-### Overall Estimated Duration : 1 Hour
+### Overall Estimated Duration : 2 Hour
 
 ## Overview
 
-Contoso Creative Writer is an intelligent app designed to streamline the creation of well-researched, product-specific articles. Users can simply input the required information and click "Start Work" to initiate the process. For those interested in observing the inner workings, a debug button in the bottom right corner of the screen allows a step-by-step view of the agent workflow. As the agents complete their respective tasks, the article draft begins to appear on the screen.
+Creative Writer is an intelligent app designed to streamline the creation of well-researched, product-specific articles. Users can simply input the required information and click "Start Work" to initiate the process. For those interested in observing the inner workings, a debug button in the bottom right corner of the screen allows a step-by-step view of the agent workflow. As the agents complete their respective tasks, the article draft begins to appear on the screen.
 
 This lab showcases how to develop and utilize AI-driven agents with Azure OpenAI. Built with FastAPI, the application orchestrates a series of specialized agents: a research agent uses the Bing Search API to gather topic-specific insights, a product agent employs Azure AI Search to find relevant products via semantic similarity in a vector store, a writer agent combines research and product information into a structured article, and an editor agent refines the final draft before presentation. Together, these agents deliver a seamless, automated writing experience, transforming user instructions into high-quality, informative articles.
 
@@ -12,13 +12,13 @@ This lab showcases how to develop and utilize AI-driven agents with Azure OpenAI
 
 Learn how to create and orchestrate AI-driven agents for automated content generation using Azure OpenAI and FastAPI. Gain hands-on experience in integrating multiple AI services, conducting research with APIs, and refining content to produce high-quality, product-specific articles. By the end of this lab, you will be able to:
 
-- **Cloud Environment Setup:** Configure the necessary Azure resources to support and manage the AI-driven content generation workflow.
+- **Deploying Resources with Azure Developer CLI:** Learn to efficiently deploy and manage Azure resources using the Azure Developer CLI, streamlining your development and deployment workflows.
 
-- **Agent Orchestration:** Implement and coordinate multiple specialized agents, including research, product, writer, and editor agents, each with a distinct role in the content creation process.
+- **Exploring the Building Blocks of the Application:** Understand about the backend and how the application is built.
 
-- **API and AI Service Integration:** Use the Bing Search API for topic research and Azure AI Search for product data retrieval, enhancing the relevance and depth of generated content.
+- **Testing the Application: API and Web Components:** Learn to run the application locally and test all the functionalities of that application.
 
-- **Content Refinement and Presentation:** Assemble research and product information into a cohesive article, refine it with the editor agent, and deliver polished content for end users.
+- **Debugging and Evaluating Application Logic:** learn to run the orchestrator, activate tracing for debugging purposes, and assess the generated content's quality.
 
 ## Pre-requisites
 
@@ -34,19 +34,21 @@ The architecture includes a series of AI-driven agents working together to produ
 
 ## Architecture Diagram
 
-![](../media/Creative_writing_aca.png)
+![](../media/contoso-arch.png)
 
 ## Explanation of Components
 
-1. **Azure Container Apps (ACA):** A managed environment (powered by Azure Container Apps) for deploying and scaling containerized applications. It orchestrates the AI agents and manages application lifecycle and scaling without requiring direct infrastructure oversight.
+1. **Azure OpenAI:** Provides advanced natural language understanding and generation capabilities, enabling the agent to interpret user input and generate meaningful results. This will be used for advanced natural language processing capabilities, enabling the agent to understand and process the user’s input.
 
-2. **Researcher Agent:** This agent leverages **Azure OpenAI** for natural language processing, **Bing Search API** for real-time web searches, and **Azure AI Search** for performing semantic searches in a vector store. It gathers relevant topic and product data to inform article creation.
+2. **Bing Search API:** Allows the agent to access up-to-date information from the web by conducting real-time searches, helping gather relevant content.This will be used to search regarding the topic provided in the user input
 
-3. **Writer Agent:** Utilizes **Azure OpenAI** to take the gathered research and product information and draft a cohesive, structured article. This agent focuses on creating an informative and readable piece of content.
+3. **Azure AI Search:** A search service that performs semantic searches within a vector store, enabling the agent to find relevant data by understanding the meaning behind queries. This will be used to find the main keywords in the prompt given by user.
 
-4. **Editor Agent:** Uses Azure OpenAI to enhance and refine the draft article, improving clarity, grammar, and flow, ensuring that the final output is polished and reader-friendly.
+4. **Application Insights:** Part of Azure Monitor, this service tracks the performance and health of the application, logging metrics and providing alerts. It enables monitoring for optimization and helps ensure reliability of the overall system.
 
-5. **Application Insights:** Part of Azure Monitor, this service tracks the performance and health of the application, logging metrics and providing alerts. It enables monitoring for optimization and helps ensure reliability of the overall system.
+5. **Azure Managed Identity:** Provides an automatically managed identity for your Azure resources to securely authenticate to services without the need for explicit credentials. It simplifies secure access to Azure services. This will be used to resolve access for the backend services from the application hosted.
+
+6. **Visual Studio Code (VS Code):** A lightweight, open-source code editor developed by Microsoft, supporting a wide range of programming languages and extensions. This will be used to development and and deployment of the application in this lab.
 
 ## Getting Started with Lab
 
@@ -112,7 +114,7 @@ Feel free to start, stop, or restart your virtual machine as needed from the Res
 
 1. The CloudLabs support team is available 24/7, 365 days a year, via email and live chat to ensure seamless assistance at any time. We offer dedicated support channels tailored specifically for both learners and instructors, ensuring that all your needs are promptly and efficiently addressed.Learner Support Contacts:
 
-   - Email Support: labs-support@spektrasystems.com
+   - Email Support: cloudlabs-support@spektrasystems.com
    - Live Chat Support: https://cloudlabs.ai/labs-support
 
 2. Now, click on Next from the lower right corner to move on to the next page.

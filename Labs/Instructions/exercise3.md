@@ -10,7 +10,7 @@ In this exercise, you will validate the functionality of the application by runn
 
 After you complete this exercise, you will:
 
- -  Learn to run and verify both Python and Javascript components of the application.
+ -  Testing the Application Locally: API and Web.
 
 ### Task 1: Testing the Application Locally: API and Web
 

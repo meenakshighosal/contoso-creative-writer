@@ -11,6 +11,7 @@ In this exercise, you will debug and evaluate the core application logic. You wi
 After you complete this exercise, you will be able to:
 
  - Debug the application by running the orchestrator logic and enabling tracing.
+ - Evaluate Application Response Quality.
 
 ### Task 1: Debug the application by running the orchestrator logic and enabling tracing.
 
