@@ -16,7 +16,7 @@ After you complete this exercise, you will:
 
 In this task, you will learn how to test the application locally by running both the API and Web parts on your local machine. You will set up the necessary environment, run the components, and verify their functionality.
 
-1. As the **Visual Studio Code** is already open, navigate back to your **Git Bash** terminal and navigate to `/src/api` from the explorer menu. 
+1. As the **Visual Studio Code** is already open, navigate back to your **Git Bash Terminal** and navigate to `/src/api` from the Explorer menu. 
 
    ```bash
    cd src/api
@@ -36,7 +36,7 @@ In this task, you will learn how to test the application locally by running both
 
    ![](../media/ex1img2.png)
 
-1. Once you are in the new tab in **Git Bash** terminal, navigate to `/src/web` directory.
+1. Once you are in the new tab in **Git Bash terminal**, navigate to `/src/web` directory.
 
    ```bash
    cd src/web
@@ -60,7 +60,7 @@ In this task, you will learn how to test the application locally by running both
 
    ![](../media/ex2img7.png)
 
-1. Once you navigate to your application, you'll be seeing a interface similar to this.
+1. Once you navigate to your application, you will be seeing a interface similar to this.
 
    ![](../media/ex2img6.png)
 
